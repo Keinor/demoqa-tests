@@ -1,2 +1,2 @@
 # demoqa-tests
-Репозиторий с дз
+Автотесты на сайт demoqa.ru, на форму "Student Registration Form"
