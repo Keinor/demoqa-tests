@@ -13,6 +13,7 @@ import static com.codeborne.selenide.Selenide.*;
  * Проверка заполнения формы регистрации студента
  */
 public class RegistrationFormTests {
+    
     private final String firstName = "Masha";
     private final String lastName = "Ivanova";
     private final String userEmail = "mi@mail.ru";
