@@ -1,34 +1,39 @@
-package com.nastyabelova.tests.tests.pages;
+package com.nastyabelova.tests.pages;
 
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import com.nastyabelova.tests.tests.pages.components.CalenderComponent;
+import com.nastyabelova.tests.helpers.TestDataHelper;
+import com.nastyabelova.tests.pages.components.CalenderComponent;
+import org.assertj.core.api.SoftAssertions;
 
 import java.io.File;
+import java.util.Map;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.*;
-import static com.nastyabelova.tests.tests.helpers.TestDataHelper.FORM_TITLE;
-import static com.nastyabelova.tests.tests.helpers.TestDataHelper.SUBJECTS_INPUT;
+import static java.lang.String.format;
+
 
 public class RegistrationPage {
+
+    private final SelenideElement formTitle = $(".practice-form-wrapper"),
+            firstNameInput = $("#firstName"),
+            lastNameInput = $("#lastName"),
+            emailInput = $("#userEmail"),
+            userNumberInput = $("#userNumber"),
+            subjectsInput = $("#subjectsInput"),
+            uploadPicture = $("#uploadPicture"),
+            addressArea = $("#currentAddress"),
+            stateOption = $("#react-select-3-input"),
+            cityOption = $("#react-select-4-input"),
+            submitForm = $("#submit");
     public CalenderComponent calender = new CalenderComponent();
-    private final SelenideElement
-            formTitle = $(".practice-form-wrapper");
-    private final SelenideElement firstNameInput = $("#firstName");
-    private final SelenideElement lastNameInput = $("#lastName");
-    private final SelenideElement emailInput = $("#userEmail");
-    private final SelenideElement userNumberInput = $("#userNumber");
-    private final SelenideElement subjectsInput = $("#subjectsInput");
-    private final SelenideElement uploadPicture = $("#uploadPicture");
-    private final SelenideElement addressArea = $("#currentAddress");
-    private final SelenideElement stateOption = $("#react-select-3-input");
-    private final SelenideElement cityOption = $("#react-select-4-input");
-    private final SelenideElement submitForm = $("#submit");
+    ElementsCollection lines = $$(".table-responsive tbody tr");
 
     public void openPage() {
         open("/automation-practice-form");
         zoom(0.8);
-        formTitle.shouldHave(text(FORM_TITLE));
+        formTitle.shouldHave(text(TestDataHelper.FORM_TITLE));
     }
 
     public RegistrationPage typeFirstName(String value) {
@@ -57,12 +62,12 @@ public class RegistrationPage {
     }
 
     public RegistrationPage typeSubjects() {
-        subjectsInput.setValue(SUBJECTS_INPUT).pressEnter();
+        subjectsInput.setValue(TestDataHelper.SUBJECTS_INPUT).pressEnter();
         return this;
     }
 
     public RegistrationPage typeHobbies(String key) {
-        $x("//label[@for='hobbies-checkbox-'" + key + "'']").click();
+        $x("//label[@for='hobbies-checkbox-" + key + "']").click();
         return this;
     }
 
@@ -91,9 +96,18 @@ public class RegistrationPage {
         return this;
     }
 
-    public RegistrationPage checkResultsValue(String key, String value) {
-        $x("//td[text()='" + key + "']").parent()
-                .shouldHave(text(value));
-        return this;
+    public void checkResultsData(Map<String, String> expectedData) {
+        SoftAssertions softly = new SoftAssertions();
+        lines.snapshot();
+        for (SelenideElement line : lines) {
+            String keytd = line.$("td").text(); //Student Name
+            String expectedValue = expectedData.get(keytd);
+            String actualValuetd = line.$("td", 1).text();
+
+            softly.assertThat(actualValuetd)
+                    .as(format("\nTable: %s contains %s, but expected %s", keytd, expectedValue, actualValuetd))
+                    .isEqualTo(expectedValue);
+        }
+        softly.assertAll();
     }
 }
