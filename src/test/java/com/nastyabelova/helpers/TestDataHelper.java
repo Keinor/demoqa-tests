@@ -1,4 +1,4 @@
-package com.nastyabelova.tests.helpers;
+package com.nastyabelova.helpers;
 
 import com.github.javafaker.Faker;
 

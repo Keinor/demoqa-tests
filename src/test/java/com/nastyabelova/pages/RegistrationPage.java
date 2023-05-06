@@ -1,9 +1,9 @@
-package com.nastyabelova.tests.pages;
+package com.nastyabelova.pages;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import com.nastyabelova.tests.helpers.TestDataHelper;
-import com.nastyabelova.tests.pages.components.CalenderComponent;
+import com.nastyabelova.helpers.TestDataHelper;
+import com.nastyabelova.pages.components.CalenderComponent;
 import org.assertj.core.api.SoftAssertions;
 
 import java.io.File;
@@ -28,7 +28,6 @@ public class RegistrationPage {
             cityOption = $("#react-select-4-input"),
             submitForm = $("#submit");
     public CalenderComponent calender = new CalenderComponent();
-    ElementsCollection lines = $$(".table-responsive tbody tr");
 
     public void openPage() {
         open("/automation-practice-form");
@@ -97,15 +96,17 @@ public class RegistrationPage {
     }
 
     public void checkResultsData(Map<String, String> expectedData) {
-        SoftAssertions softly = new SoftAssertions();
-        lines.snapshot();
-        for (SelenideElement line : lines) {
-            String keytd = line.$("td").text(); //Student Name
-            String expectedValue = expectedData.get(keytd);
-            String actualValuetd = line.$("td", 1).text();
+        ElementsCollection lines = $$(".table-responsive tbody tr").snapshot();
 
-            softly.assertThat(actualValuetd)
-                    .as(format("\nTable: %s contains %s, but expected %s", keytd, expectedValue, actualValuetd))
+        SoftAssertions softly = new SoftAssertions();
+
+        for (SelenideElement line : lines) {
+            String keyTd = line.$("td").text();
+            String expectedValue = expectedData.get(keyTd);
+            String actualValueTd = line.$("td", 1).text();
+
+            softly.assertThat(actualValueTd)
+                    .as(format("\nTable: %s contains %s, but expected %s", keyTd, expectedValue, actualValueTd))
                     .isEqualTo(expectedValue);
         }
         softly.assertAll();

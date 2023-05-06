@@ -1,10 +1,8 @@
-package com.nastyabelova.tests.tests;
+package com.nastyabelova.tests;
 
-import com.nastyabelova.tests.helpers.TestDataHelper;
-import com.nastyabelova.tests.pages.RegistrationPage;
+import com.nastyabelova.helpers.TestDataHelper;
+import com.nastyabelova.pages.RegistrationPage;
 import org.junit.jupiter.api.Test;
-
-import static com.nastyabelova.tests.helpers.TestDataHelper.expectedData;
 
 /**
  * Проверка заполнения формы регистрации студента
@@ -31,7 +29,7 @@ public class RegistrationFormTests extends TestBase {
                 .calender.setDate(TestDataHelper.DAY, TestDataHelper.MONTH, TestDataHelper.YEAR);
 
         registrationPage.submitFormRegistration();
-        registrationPage.checkResultsData(expectedData);
+        registrationPage.checkResultsData(TestDataHelper.expectedData);
     }
 }
 
